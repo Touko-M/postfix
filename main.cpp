@@ -159,12 +159,16 @@ void dc_calculate(){
         average=sum/count;
         if(numbers.push(average)==overflow){cout << "stack is full" << endl;return;}
         
-        }else{
-            //turn user input string into a double
-            double num = stod(token);
-            //push double into stack
-            numbers.push(num);
-        }
+        }else{//try catch to fix a nasty bug
+            try{
+        //turn user input string into a double
+        double num = stod(token);
+        //push double into stack
+        numbers.push(num);
+        } catch (...) {
+        cout << "invalid input! " << token << endl;
+        return;
+        }}
     }
         double result;
         //save top double of stack into result and make sure stack isn't empty
@@ -180,12 +184,19 @@ bool do_command(char command, Stack &numbers) {
     int count = 0;
     double average = 0;
     switch (command) {
-    case '?':
+    case '?': 
+        //fixed a nasty bug
         cout << "Enter a real number: ";
-        cin >> p;
+        if (cin >> p) {
         if (numbers.push(p) == overflow)
             cout << "Warning: Stack full, lost number" << endl;
-        break;
+    } else {
+        cout << "Invalid input, expected a number" << endl;
+        cin.clear();
+        cin.ignore(1000, '\n');
+    }
+    break;
+        
     case '=':
         if (numbers.top(p) == underflow)
             cout << "Stack empty" << endl;
