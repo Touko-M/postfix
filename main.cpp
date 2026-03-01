@@ -39,7 +39,7 @@ void introduction() {
 }
 
 void instructions() {
-    cout << "[?] push number  [=] print top  [+][-][*][/] arithmetic [x]exchange  [Q]uit" << endl;
+    cout << "[?] push number  [=] print top  [+][-][*][/] arithmetic [x]exchange [s]sum  [Q]uit" << endl;
 }
 
 char get_command() {
@@ -51,8 +51,8 @@ char get_command() {
         command = tolower(command);
         if (command == '?' || command == '=' || command == '+' ||
             command == '-' || command == '*' || command == '/' ||
-            command == 'q' || command == 'x') //x for exchange
-            waiting = false;
+            command == 'q' || command == 'x' || command == 's') //x for exchange
+            waiting = false;                                    //s for sum
         else {
             cout << "Invalid command. [?]=push [=]print top [+][-][*][/] [Q]uit: ";
         }
@@ -62,6 +62,8 @@ char get_command() {
 
 bool do_command(char command, Stack &numbers) {
     double p, q;
+    double sum = 0;
+    double temp = 0;
     switch (command) {
     case '?':
         cout << "Enter a real number: ";
@@ -115,7 +117,20 @@ bool do_command(char command, Stack &numbers) {
         if (numbers.push(p) == overflow){cout << "Stack is full" << endl; break;}
         if (numbers.push(q) == overflow){cout << "Stack is full" << endl; break;}
         break;
-        
+        //third increment, added sum
+    case 's':
+        //while stack isn't empty
+        while (!numbers.empty()){
+            //add top to temp variable
+            if (numbers.top(temp) == underflow){cout << "stack is empty" << endl; break;}
+            //add temp to sum
+            sum += temp;
+            //pop the top number
+            numbers.pop();
+        }
+        //push sum to stack
+        if(numbers.push(sum)==overflow){cout <<"stack is full" << endl; break;}
+         break;
     case 'q':
         cout << "Calculation finished." << endl;
         return false;
