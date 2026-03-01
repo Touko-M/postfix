@@ -39,7 +39,7 @@ void introduction() {
 }
 
 void instructions() {
-    cout << "[?] push number  [=] print top  [+][-][*][/] arithmetic [x]exchange [s]sum  [Q]uit" << endl;
+    cout << "[?] push number  [=] print top  [+][-][*][/] arithmetic [x]exchange [s]sum [a]average [Q]uit" << endl;
 }
 
 char get_command() {
@@ -51,10 +51,11 @@ char get_command() {
         command = tolower(command);
         if (command == '?' || command == '=' || command == '+' ||
             command == '-' || command == '*' || command == '/' ||
-            command == 'q' || command == 'x' || command == 's') //x for exchange
-            waiting = false;                                    //s for sum
+            command == 'q' || command == 'x' || command == 's' ||
+            command == 'a')
+            waiting = false;                                  
         else {
-            cout << "Invalid command. [?]=push [=]print top [+][-][*][/] [Q]uit: ";
+            cout << "Invalid command. [?]=push [=]print top [+][-][*][/] [x][s][a][Q]: ";
         }
     }
     return command;
@@ -64,6 +65,8 @@ bool do_command(char command, Stack &numbers) {
     double p, q;
     double sum = 0;
     double temp = 0;
+    int count = 0;
+    double average = 0;
     switch (command) {
     case '?':
         cout << "Enter a real number: ";
@@ -131,6 +134,22 @@ bool do_command(char command, Stack &numbers) {
         //push sum to stack
         if(numbers.push(sum)==overflow){cout <<"stack is full" << endl; break;}
          break;
+        //fourth increment, added average
+    case 'a':
+        //sum logic with count++ added
+        while (!numbers.empty()){
+            if (numbers.top(temp) == underflow){cout << "stack is empty" << endl; break;}
+            sum += temp;
+            numbers.pop();
+            count ++;
+        }
+        //After while loop average is equal to sum/count
+        average=sum/count;
+        //push average to stack
+        if(numbers.push(average)==overflow){cout << "stack is full" << endl; break;}
+        break;
+
+
     case 'q':
         cout << "Calculation finished." << endl;
         return false;
