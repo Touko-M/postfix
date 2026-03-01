@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cctype>
+#include <cmath>
+#include <sstream>
+#include <string>
 using namespace std;
 
 enum Error_code { success, overflow, underflow };
@@ -60,6 +63,115 @@ char get_command() {
     }
     return command;
 }
+//new function for fifth increment
+void dc_calculate(){
+    double a, b;
+    double sum = 0;
+    double temp = 0;
+    double average = 0;
+    int count = 0;
+    Stack numbers;
+    string line;
+    //read the whole line of user input
+    getline(cin, line);
+    //convert it into a stringstream
+    stringstream ss(line);
+
+    string token;
+    //while loop that goes through the whole user input
+    while(ss>>token){
+
+        if (token=="+"){
+            if (numbers.top(a)==underflow){cout << "Stack is empty" << endl; return;}
+            numbers.pop();
+            if (numbers.top(b)==underflow){cout << "Stack has just one entry" << endl; return;}
+            numbers.pop();
+            numbers.push(b+a);
+
+        }else if(token=="q"){
+            exit(0);
+        }else if(token=="-"){
+            if (numbers.top(a)==underflow){cout << "Stack is empty" << endl; return;}
+            numbers.pop();
+            if (numbers.top(b)==underflow){cout << "Stack has just one entry" << endl; return;}
+            numbers.pop();
+            numbers.push(b-a);
+
+        }else if(token=="*"){
+            if (numbers.top(a)==underflow){cout << "Stack is empty" << endl; return;}
+            numbers.pop();
+            if (numbers.top(b)==underflow){cout << "Stack has just one entry" << endl; return;}
+            numbers.pop();
+            numbers.push(b*a);
+
+        }else if(token=="/"){
+            if (numbers.top(a)==underflow){cout << "Stack is empty" << endl; return;}
+            numbers.pop();
+            if (numbers.top(b)==underflow){cout << "Stack has just one entry" << endl; return;}
+            numbers.pop();
+            if (a==0){cout << "Division by zero" << endl; return;}
+            numbers.push(b/a);
+
+        }else if(token=="%"){
+            if (numbers.top(a)==underflow){cout << "Stack is empty" << endl; return;}
+            numbers.pop();
+            if (numbers.top(b)==underflow){cout << "Stack has just one entry" << endl; return;}
+            numbers.pop();
+            //fmod is % for doubles
+            numbers.push(fmod(b,a));
+
+        }else if(token=="^"){
+            if (numbers.top(a)==underflow){cout << "Stack is empty" << endl; return;}
+            numbers.pop();
+            if (numbers.top(b)==underflow){cout << "Stack has just one entry" << endl; return;}
+            numbers.pop();
+            numbers.push(pow(b,a));
+
+        }else if(token=="v"){
+            if (numbers.top(a)==underflow){cout << "Stack is empty" << endl; return;}
+            numbers.pop();
+            if (a<0){cout << "Cannot sqrt negative number" << endl; return;}
+            numbers.push(sqrt(a));
+        
+        } else if(token=="x"){
+        if (numbers.top(a) == underflow){cout << "Stack empty" << endl; return; }
+        numbers.pop();
+        if (numbers.top(b) == underflow){cout << "Stack has just one entry" << endl; return;}
+        numbers.pop();
+        if (numbers.push(a) == overflow){cout << "Stack is full" << endl; return;}
+        if (numbers.push(b) == overflow){cout << "Stack is full" << endl; return;}
+        
+        }else if(token=="s"){
+        while (!numbers.empty()){
+            if (numbers.top(temp) == underflow){cout << "stack is empty" << endl; return;}
+            sum += temp;
+            numbers.pop();
+        }
+        if(numbers.push(sum)==overflow){cout <<"stack is full" << endl; return;}
+        
+        } else if(token=="a"){
+        while (!numbers.empty()){
+            if (numbers.top(temp) == underflow){cout << "stack is empty" << endl; return;}
+            sum += temp;
+            numbers.pop();
+            count ++;
+        }
+        average=sum/count;
+        if(numbers.push(average)==overflow){cout << "stack is full" << endl;return;}
+        
+        }else{
+            //turn user input string into a double
+            double num = stod(token);
+            //push double into stack
+            numbers.push(num);
+        }
+    }
+        double result;
+        //save top double of stack into result and make sure stack isn't empty
+        if (numbers.top(result)==underflow){cout << "stack is empty" << endl; return;}
+        //print the result
+        cout << result << endl;
+    }
 
 bool do_command(char command, Stack &numbers) {
     double p, q;
@@ -156,11 +268,22 @@ bool do_command(char command, Stack &numbers) {
     }
     return true;
 }
-
-int main() {
+//added parameteres to main for argument handling (needed for -p)
+int main(int argc, char* argv[]) {
     Stack stored_numbers;
+    //if there are more arguments than just the program name
+    //and the argument converted to string is equal to -p
+    //we use the old structure
+    if (argc > 1 && string(argv[1])=="-p"){
     introduction();
     instructions();
     while (do_command(get_command(), stored_numbers));
+    } else {
+        //we are being held as hostages until q
+        while(true){
+        dc_calculate();
+        }
+    }
     return 0;
+    
 }
